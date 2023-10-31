@@ -1,0 +1,22 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button x:Name="MonoBtn" Content="Monoalfabetyczny" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Click="MonoBtn_Click"/>
+        <Button x:Name="PoliBtn" Content="Polialfabetyczny" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="101" Click="PoliBtn_Click"/>
+        <Button x:Name="TransBtn" Content="Transpozycyjny" HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top" Width="101" Click="TransBtn_Click"/>
+        <Button x:Name="Base64Btn" Content="Base64" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Click="Base64Btn_Click" Width="101"/>
+        <Button x:Name="HammingBtn" Content="Hamming" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top" Width="101" Click="HammingBtn_Click"/>
+        <CheckBox x:Name="TextOrBinChcBox" Content="Tryb binarny" HorizontalAlignment="Left" Margin="184,13,0,0" VerticalAlignment="Top" Checked="TextOrBinChcBox_Checked" Unchecked="TextOrBinChcBox_Unchecked"/>
+        <Button x:Name="GetFromFileBtn" Content="Wybierz z pliku" HorizontalAlignment="Left" Margin="665,42,0,0" VerticalAlignment="Top" Click="GetFromFileBtn_Click"/>
+        <TextBox x:Name="ContentBox" HorizontalAlignment="Center" Margin="0,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="432" Height="175" TextChanged="ContentBox_TextChanged"/>
+        <TextBlock x:Name="KeyTextBox" HorizontalAlignment="Left" Margin="184,222,0,0" TextWrapping="Wrap" Text="Klucz" VerticalAlignment="Top" Width="43"/>
+        <TextBox x:Name="KeyTxtBox" HorizontalAlignment="Left" Margin="256,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="360" RenderTransformOrigin="0.058,-0.276" TextChanged="KeyTxtBox_TextChanged"/>
+
+    </Grid>
+</Window>
