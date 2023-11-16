@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="BulSzyfr" Height="450" Width="800">
     <Grid>
         <Button x:Name="MonoBtn" Content="Monoalfabetyczny" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Click="MonoBtn_Click"/>
         <Button x:Name="PoliBtn" Content="Polialfabetyczny" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="101" Click="PoliBtn_Click"/>
@@ -17,6 +17,7 @@
         <TextBox x:Name="ContentBox" HorizontalAlignment="Center" Margin="0,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="432" Height="175" TextChanged="ContentBox_TextChanged"/>
         <TextBlock x:Name="KeyTextBox" HorizontalAlignment="Left" Margin="184,222,0,0" TextWrapping="Wrap" Text="Klucz" VerticalAlignment="Top" Width="43"/>
         <TextBox x:Name="KeyTxtBox" HorizontalAlignment="Left" Margin="256,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="360" RenderTransformOrigin="0.058,-0.276" TextChanged="KeyTxtBox_TextChanged"/>
+        <Button x:Name="RSABttn" Content="RSA" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="101" Click="RSABttn_Click"/>
 
     </Grid>
 </Window>

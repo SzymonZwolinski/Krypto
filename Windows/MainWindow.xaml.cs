@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,20 +36,23 @@ namespace WpfApp1
 		private readonly IMono _mono;
 		private readonly ITrans _trans;
 		private readonly IBase64 _base64;
-		private readonly IHamming _hamming;	
+		private readonly IHamming _hamming;
+		private readonly IRSA _rsa;
 
 		public MainWindow(
 			IPoli poli, 
 			IMono mono,
 			ITrans trans,
 			IBase64 base64,
-			IHamming hamming)
+			IHamming hamming,
+			IRSA rsa)
 		{
 			_poli = poli;
 			_mono = mono;
 			_trans = trans;
 			_base64 = base64;
 			_hamming = hamming;
+			_rsa = rsa;
 
 			InitializeComponent();
 		}
@@ -125,6 +129,24 @@ namespace WpfApp1
 			WindowHandler.InitalizeAndOpenResultWindow(result, CipherTypes.Hamming);
 		}
 
+		private void RSABttn_Click(Object sender, RoutedEventArgs e)
+		{
+			List<List<BigInteger>> result;
+			Tuple<BigInteger, BigInteger> privateKey;
+			Tuple<BigInteger, BigInteger> publicKey;
+/*
+			if(IsContentBinary) 
+			{
+				result = _rsa.EncodeBitRsa(ContentToCipher);
+			}
+			else
+			{*/
+				(result, publicKey, privateKey) = _rsa.EncodeRSA(ContentToCipher);
+			//}
+
+			WindowHandler.InitalizeRSAWindow(result, publicKey, privateKey);
+		}
+
 		#endregion
 
 		private void TextOrBinChcBox_Checked(object sender, RoutedEventArgs e)
@@ -165,6 +187,7 @@ namespace WpfApp1
 		{
 			ContentToCipher = ContentBox.Text;
 		}
+
 
 		private bool CheckCorrectValues()
 		{

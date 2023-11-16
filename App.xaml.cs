@@ -19,6 +19,7 @@ namespace WpfApp1
 			services.AddScoped<ITrans, Trans>();
 			services.AddScoped<IBase64, Base64>();
 			services.AddScoped<IHamming, Hamming>();
+			services.AddScoped<IRSA, RSA>();
 
 			_serviceProvider = services.BuildServiceProvider();
 		}
@@ -34,7 +35,8 @@ namespace WpfApp1
 				_serviceProvider.GetRequiredService<IMono>(), 
 				_serviceProvider.GetRequiredService<ITrans>(),
 				_serviceProvider.GetRequiredService<IBase64>(),
-				_serviceProvider.GetRequiredService<IHamming>());
+				_serviceProvider.GetRequiredService<IHamming>(),
+				_serviceProvider.GetRequiredService<IRSA>());
 
 			mainWindow.Show();
 		}
