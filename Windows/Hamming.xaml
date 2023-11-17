@@ -1,0 +1,15 @@
+﻿<Window x:Class="WpfApp1.Windows.Hamming"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1.Windows"
+        mc:Ignorable="d"
+        Title="BulSzyfrHomik" Height="450" Width="800">
+    <Grid>
+        <TextBox HorizontalAlignment="Left" Margin="27,111,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="566" Height="287"/>
+        <Button x:Name="DecodeBtn" Content="Odkoduj" HorizontalAlignment="Left" Margin="666,55,0,0" VerticalAlignment="Top" Click="DecodeBtn_Click"/>
+        <Button x:Name="Destroybtn" Content="Rozwal" HorizontalAlignment="Left" Margin="666,30,0,0" VerticalAlignment="Top" Width="50" Click="Destroybtn_Click"/>
+
+    </Grid>
+</Window>

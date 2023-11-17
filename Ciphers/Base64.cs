@@ -1,5 +1,8 @@
 ﻿using System.Text;
 using System;
+using System.Collections;
+using WpfApp1.Helpers;
+using System.Numerics;
 
 namespace WpfApp1.Ciphers
 {
@@ -7,34 +10,32 @@ namespace WpfApp1.Ciphers
 	{
 		private const string Base64Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-		public string BinToBase64(byte[] binText)
+		public string BinToBase64(BigInteger binText)
 		{
 			var base64StringBuilder = new StringBuilder();
 
-			for (int i = 0; i < binText.Length; i += 3)
+			var binString = binText.ToString();
+
+			var padding = 8 - binString.Length % 8;
+			binString = new string('0', padding) + binString;
+
+			for (var i = 0; i < binString.Length; i += 6)
 			{
-				int groupSize = Math.Min(3, binText.Length - i);
-				int byte1 = binText[i];
-				int byte2 = groupSize > 1 ? binText[i + 1] : 0;
-				int byte3 = groupSize > 2 ? binText[i + 2] : 0;
+				var groupSize = Math.Min(6, binString.Length - i);
 
-				int char1 = byte1 >> 2;
-				int char2 = ((byte1 & 3) << 4) | (byte2 >> 4);
-				int char3 = ((byte2 & 15) << 2) | (byte3 >> 6);
-				int char4 = byte3 & 63;
+				var value = Convert.ToInt32(binString.Substring(i, groupSize), 2);
 
-				base64StringBuilder.Append(Base64Characters[char1]);
-				base64StringBuilder.Append(Base64Characters[char2]);
-				base64StringBuilder.Append(groupSize > 1 ? Base64Characters[char3] : '=');
-				base64StringBuilder.Append(groupSize > 2 ? Base64Characters[char4] : '=');
+				base64StringBuilder.Append(Base64Characters[value]);
 			}
 
 			return base64StringBuilder.ToString();
 		}
 
+
+
 		public string ToBase64(string text)
 		{
-			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(text);
+			var plainTextBytes = StringHelpers<string>.BinaryStringToBites(text);
 
 			return BinToBase64(plainTextBytes);
 		}

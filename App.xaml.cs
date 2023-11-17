@@ -11,32 +11,20 @@ namespace WpfApp1
 	{
 		private IServiceProvider _serviceProvider;
 
-		private void ConfigureServices()
-		{
-			var services = new ServiceCollection();
-			services.AddScoped<IPoli, Poli>();
-			services.AddScoped<IMono, Mono>();
-			services.AddScoped<ITrans, Trans>();
-			services.AddScoped<IBase64, Base64>();
-			services.AddScoped<IHamming, Hamming>();
-			services.AddScoped<IRSA, RSA>();
-
-			_serviceProvider = services.BuildServiceProvider();
-		}
-
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup(e);
 
-			ConfigureServices();
+			_serviceProvider = AppStartup.ConfigureServices();
 
 			var mainWindow = new MainWindow(
 				_serviceProvider.GetRequiredService<IPoli>(),
-				_serviceProvider.GetRequiredService<IMono>(), 
+				_serviceProvider.GetRequiredService<IMono>(),
 				_serviceProvider.GetRequiredService<ITrans>(),
 				_serviceProvider.GetRequiredService<IBase64>(),
 				_serviceProvider.GetRequiredService<IHamming>(),
-				_serviceProvider.GetRequiredService<IRSA>());
+				_serviceProvider.GetRequiredService<IRSA>(),
+				_serviceProvider);
 
 			mainWindow.Show();
 		}

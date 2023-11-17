@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+using WpfApp1.Helpers;
 
 namespace WpfApp1.Ciphers
 {
 	public class RSA : IRSA
 	{
-		public List<BigInteger> EncodeBitRsa(string input)
+		private const int blockSize = 128;
+		private const int binBlockSize = 64;
+
+		public (List<List<BigInteger>>, 
+			Tuple<BigInteger, BigInteger>, 
+			Tuple<BigInteger, BigInteger>) EncodeBitRsa(BigInteger input)
 		{
 			var keyPair = GenerateKeyPair();
 			var publicKey = keyPair.Item1;
@@ -20,11 +23,42 @@ namespace WpfApp1.Ciphers
 			var n = publicKey.Item1;
 			var e = publicKey.Item2;
 
-			List<BigInteger> encryptedText = input.Select(c => BigInteger.ModPow(c, e, n)).ToList();
-			return encryptedText;
+			var blocks = new List<BigInteger>();
+			var bitesAsString = input.ToString();
+			for(var i = 0; i < bitesAsString.Length; i += binBlockSize)
+			{
+				if(bitesAsString.Length < binBlockSize)
+				{
+					bitesAsString = AddPaddingToBitArray(bitesAsString);
+					blocks.Add(StringHelpers<string>.BinaryStringToBites(bitesAsString));
+				}
+				else
+				{
+					blocks.Add(StringHelpers<string>.BinaryStringToBites(bitesAsString.Substring(i, i + binBlockSize)));
+				}
+
+				bitesAsString.Remove(i, i + binBlockSize);
+			}
+
+			var encryptedBlocks = blocks.Select(x => BigInteger.ModPow(x, e, n)).ToList();
+
+			var encryptedBlockLists = new List<List<BigInteger>>();
+			foreach (var encryptedBlock in encryptedBlocks)
+			{
+				var singleBlockList = new List<BigInteger> { encryptedBlock };
+				encryptedBlockLists.Add(singleBlockList);
+			}
+
+			return (
+				encryptedBlockLists,
+				publicKey, 
+				privateKey);
 		}
 
-		public (List<List<BigInteger>>, Tuple<BigInteger, BigInteger>, Tuple<BigInteger, BigInteger>) EncodeRSA(string input)
+
+		public (List<List<BigInteger>>,
+			Tuple<BigInteger, BigInteger>, 
+			Tuple<BigInteger, BigInteger>) EncodeRSA(string input)
 		{
 			var keyPair = GenerateKeyPair();
 			var publicKey = keyPair.Item1;
@@ -33,7 +67,6 @@ namespace WpfApp1.Ciphers
 			var n = publicKey.Item1;
 			var e = publicKey.Item2;
 
-			var blockSize = 128; // Długość bloku w bitach
 			var blocks = input
 				.Select((c, index) => new { Value = c, Index = index })
 				.GroupBy(x => x.Index / (blockSize / 8))
@@ -41,36 +74,52 @@ namespace WpfApp1.Ciphers
 				.ToList();
 
 			var encryptedBlocks = blocks
-				.Select(block => block.Select(c => BigInteger.ModPow(c, e, n)).ToList())
+				.Select(block =>
+				block.Select(c =>
+					BigInteger.ModPow(c, e, n))
+					.ToList()) // c^e % n
 				.ToList();
 
 			return (encryptedBlocks, publicKey, privateKey);
 		}
 
-		public string Decrypt(List<BigInteger> encryptedText, Tuple<BigInteger, BigInteger> privateKey)
+		public string Decrypt(List<List<BigInteger>> encryptedText, Tuple<BigInteger, BigInteger> privateKey)
 		{
 			var n = privateKey.Item1;
 			var d = privateKey.Item2;
 
-			var decryptedText = new string(encryptedText.Select(c => (char)BigInteger.ModPow(c, d, n)).ToArray());
+			var decryptedText = "";
+
+			foreach (var encryptedList in encryptedText)
+			{
+				foreach (var c in encryptedList)
+				{
+					decryptedText += (char)BigInteger.ModPow(c, d, n);
+				}
+			}
 
 			return decryptedText;
 		}
+
 		#region helpers
 		private Tuple<Tuple<BigInteger, BigInteger>, Tuple<BigInteger, BigInteger>> GenerateKeyPair()
 		{
-			BigInteger p = 0, q = 0;
+			BigInteger p = 0, q = 0, n = 0;
 
-			while (!IsPrime(p))
+			while (n < 128) // n musi byc większe lub równe podziałowi na bloki
 			{
-				p = GetRandomBigInteger(10);
-			}
-			while (!IsPrime(q) || q == p)
-			{
-				q = GetRandomBigInteger(10);
-			}
+				while (!IsPrime(p))
+				{
+					p = GetRandomBigInteger(10);
+				}
+				while (!IsPrime(q) || q == p)
+				{
+					q = GetRandomBigInteger(10);
+				}
 
-			var n = p * q;
+				 n = p * q;
+			}
+			
 			var phi = (p - 1) * (q - 1);
 
 			var e = GetRandomExponent(phi);
@@ -84,7 +133,7 @@ namespace WpfApp1.Ciphers
 		{
 			if (num < 2)
 				return false;
-			for (BigInteger i = 2; i * i <= num; i++)
+			for (var i = 2; i * i <= num; i++)
 			{
 				if (num % i == 0)
 					return false;
@@ -97,7 +146,7 @@ namespace WpfApp1.Ciphers
 			var random = new Random();
 			var bytes = new byte[bitLength / 8];
 			random.NextBytes(bytes);
-			bytes[bytes.Length - 1] &= (byte)0x7F; 
+			bytes[bytes.Length - 1] &= (byte)0x7F; //upewnienie sie ze liczba zawsze jest nieujemna (And na ostatniej)
 			return new BigInteger(bytes);
 		}
 
@@ -138,10 +187,17 @@ namespace WpfApp1.Ciphers
 			}
 
 			return x1;
-
-
 		}
 
+		private string AddPaddingToBitArray(string bites)
+		{
+			while (bites.Length != binBlockSize) 
+			{
+				bites += "0";
+			}
+
+			return bites;
+		}
 		#endregion
 	}
 }

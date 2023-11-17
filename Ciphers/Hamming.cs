@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using WpfApp1.Helpers;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WpfApp1.Ciphers
 {
 	public class Hamming : IHamming
 	{
-		public string EncodeBinHamming(string data)
+		public string EncodeBinHamming(BigInteger data)
 		{
-			int m = data.Length;
+			int m = data.GetLength();
 			int r = 0;
 			while (Math.Pow(2, r) < m + r + 1)
 			{
@@ -20,6 +23,7 @@ namespace WpfApp1.Ciphers
 
 			char[] encodedData = new char[m + r];
 			int j = 0;
+
 			for (int i = 0; i < m + r; i++)
 			{
 				if (IsPowerOfTwo(i + 1))
@@ -28,7 +32,7 @@ namespace WpfApp1.Ciphers
 				}
 				else
 				{
-					encodedData[i] = data[j++];
+					encodedData[i] = StringHelpers<string>.BinaryStringToBites(data.ToString().Substring(j++, 0)) == 1 ? '1' : '0';
 				}
 			}
 
@@ -36,6 +40,7 @@ namespace WpfApp1.Ciphers
 			{
 				int parityIndex = (int)Math.Pow(2, i) - 1;
 				int sum = 0;
+
 				for (int k = parityIndex; k < m + r; k += (int)Math.Pow(2, i + 1))
 				{
 					for (int l = 0; l < Math.Pow(2, i) && k + l < m + r; l++)
@@ -58,10 +63,55 @@ namespace WpfApp1.Ciphers
 
 		public string EncodeHamming(string input)
 		{
-			var plainTextBin = 	Encoding.ASCII.GetBytes(input);
-			var binaryString = string.Join(" ", plainTextBin.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
+			var plainTextBin = 	StringHelpers<string>.BinaryStringToBites(input);
 
-			return EncodeBinHamming(binaryString);
+			return EncodeBinHamming(plainTextBin);
+		}
+
+		public string DecodeBinHamming(string encodedData)
+		{
+			int r = 0;
+			while (Math.Pow(2, r) < encodedData.Length + r + 1)
+			{
+				r++;
+			}
+
+			int m = encodedData.Length - r;
+			char[] decodedData = new char[m];
+			int j = 0;
+
+			for (int i = 0; i < m; i++)
+			{
+				if (!IsPowerOfTwo(i + 1))
+				{
+					decodedData[i] = encodedData[j++];
+				}
+			}
+
+			for (int i = 0; i < r; i++)
+			{
+				int parityIndex = (int)Math.Pow(2, i) - 1;
+				int sum = 0;
+
+				for (int k = parityIndex; k < encodedData.Length; k += (int)Math.Pow(2, i + 1))
+				{
+					for (int l = 0; l < Math.Pow(2, i) && k + l < encodedData.Length; l++)
+					{
+						if (encodedData[k + l] == '1')
+						{
+							sum++;
+						}
+					}
+				}
+
+				if (sum % 2 != 0)
+				{
+					// Flip the bit to correct the error
+					decodedData[parityIndex] = (decodedData[parityIndex] == '1') ? '0' : '1';
+				}
+			}
+
+			return decodedData.ToString();
 		}
 
 		private int CalculateRedundantBits(int m)
@@ -77,9 +127,9 @@ namespace WpfApp1.Ciphers
 			return r;
 		}
 
-		public static bool IsPowerOfTwo(int n)
+		private bool IsPowerOfTwo(int x)
 		{
-			return (n & (n - 1)) == 0 && n != 0;
+			return (x & (x - 1)) == 0 && x != 0;
 		}
 	}
 }

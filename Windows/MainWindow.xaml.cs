@@ -1,21 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WpfApp1.Ciphers;
 using WpfApp1.Enums;
 using WpfApp1.Helpers;
@@ -39,13 +27,16 @@ namespace WpfApp1
 		private readonly IHamming _hamming;
 		private readonly IRSA _rsa;
 
+		private readonly IServiceProvider _serviceProvider;
+
 		public MainWindow(
 			IPoli poli, 
 			IMono mono,
 			ITrans trans,
 			IBase64 base64,
 			IHamming hamming,
-			IRSA rsa)
+			IRSA rsa,
+			IServiceProvider serviceProvider)
 		{
 			_poli = poli;
 			_mono = mono;
@@ -53,6 +44,8 @@ namespace WpfApp1
 			_base64 = base64;
 			_hamming = hamming;
 			_rsa = rsa;
+
+			_serviceProvider = serviceProvider;
 
 			InitializeComponent();
 		}
@@ -104,7 +97,7 @@ namespace WpfApp1
 			string result;
 			if(IsContentBinary)
 			{
-				result = _base64.BinToBase64(StringToBin.BinaryStringToByteArray(ContentToCipher));
+				result = _base64.BinToBase64(StringHelpers<string>.BinaryStringToBites(ContentToCipher));
 			}
 			else 
 			{
@@ -117,9 +110,10 @@ namespace WpfApp1
 		private void HammingBtn_Click(object sender, RoutedEventArgs e)
 		{
 			string result;
+
 			if (IsContentBinary)
 			{
-				result = _hamming.EncodeBinHamming(ContentToCipher);
+				result = _hamming.EncodeBinHamming(StringHelpers<string>.BinaryStringToBites(ContentToCipher));
 			}
 			else
 			{
@@ -134,17 +128,22 @@ namespace WpfApp1
 			List<List<BigInteger>> result;
 			Tuple<BigInteger, BigInteger> privateKey;
 			Tuple<BigInteger, BigInteger> publicKey;
-/*
+
 			if(IsContentBinary) 
 			{
-				result = _rsa.EncodeBitRsa(ContentToCipher);
+				(result,
+				publicKey, 
+				privateKey) = _rsa.EncodeBitRsa(
+					StringHelpers<string>.BinaryStringToBites(ContentToCipher));
 			}
 			else
-			{*/
-				(result, publicKey, privateKey) = _rsa.EncodeRSA(ContentToCipher);
-			//}
+			{
+				(result,
+				publicKey,
+				privateKey) = _rsa.EncodeRSA(ContentToCipher);
+			}
 
-			WindowHandler.InitalizeRSAWindow(result, publicKey, privateKey);
+			WindowHandler.InitalizeRSAWindow(result, publicKey, privateKey, _serviceProvider);
 		}
 
 		#endregion

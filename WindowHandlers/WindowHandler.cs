@@ -30,21 +30,14 @@ namespace WpfApp1.WindowHandlers
 		public static void InitalizeRSAWindow(
 			List<List<BigInteger>> rsa,
 			Tuple<BigInteger, BigInteger> PublicKey,
-			Tuple<BigInteger, BigInteger> PrivateKey) 
+			Tuple<BigInteger, BigInteger> PrivateKey,
+			IServiceProvider serviceProvider) 
 		{
-			var RSAWindow = new Windows.RSA(
-				string.Join("", PrivateKey),
-				string.Join("", PublicKey),
-				ConvertToString(rsa));
+			var RSAWindow = new Windows.RSA(serviceProvider.GetRequiredService<IRSA>(), serviceProvider);
+
+			RSAWindow.InitalizeUI(PrivateKey, PublicKey, rsa);
 
 			RSAWindow.Show();
-		}
-
-		private static string ConvertToString(List<List<BigInteger>> listOfLists)
-		{
-			// Konwersja każdej listy do ciągu znaków i połączenie ich
-			return string.Join(",", listOfLists.Select(block =>
-				string.Join(",", block.Select(bigInteger => bigInteger.ToString()))));
 		}
 	}
 }
