@@ -26,6 +26,7 @@ namespace WpfApp1
 		private readonly IBase64 _base64;
 		private readonly IHamming _hamming;
 		private readonly IRSA _rsa;
+		private readonly IRC4 _rc4;
 
 		private readonly IServiceProvider _serviceProvider;
 
@@ -36,6 +37,7 @@ namespace WpfApp1
 			IBase64 base64,
 			IHamming hamming,
 			IRSA rsa,
+			IRC4 rc4,
 			IServiceProvider serviceProvider)
 		{
 			_poli = poli;
@@ -44,6 +46,7 @@ namespace WpfApp1
 			_base64 = base64;
 			_hamming = hamming;
 			_rsa = rsa;
+			_rc4 = rc4;
 
 			_serviceProvider = serviceProvider;
 
@@ -69,7 +72,11 @@ namespace WpfApp1
 
 			var result = _mono.MonoalphabeticEncrypt(ContentToCipher, int.Parse(Key));
 
-			WindowHandler.InitalizeAndOpenResultWindow(result, CipherTypes.Mono);
+			WindowHandler.InitalizeAndOpenResultWindow(
+				result,
+				CipherTypes.Mono,
+				_serviceProvider,
+				Key);
 		}
 
 		private void PoliBtn_Click(object sender, RoutedEventArgs e)
@@ -80,7 +87,11 @@ namespace WpfApp1
 			}
 
 			var result = _poli.PolyalphabeticEncrypt(ContentToCipher, Key);
-			WindowHandler.InitalizeAndOpenResultWindow(result, CipherTypes.Poli);
+			WindowHandler.InitalizeAndOpenResultWindow(
+				result,
+				CipherTypes.Poli,
+				_serviceProvider,
+				Key);
 		}
 
 		private void TransBtn_Click(object sender, RoutedEventArgs e)
@@ -88,8 +99,11 @@ namespace WpfApp1
 
 			var (result, matrix) = _trans.TransparentEncription(ContentToCipher);
 
-			WindowHandler.InitalizeAndOpenResultWindow(result, CipherTypes.Trans, matrix);
-
+			WindowHandler.InitalizeAndOpenResultWindow(
+				result,
+				CipherTypes.Trans,
+				matrix, 
+				_serviceProvider);
 		}
 
 		private void Base64Btn_Click(object sender, RoutedEventArgs e)
@@ -97,14 +111,19 @@ namespace WpfApp1
 			string result;
 			if(IsContentBinary)
 			{
-				result = _base64.BinToBase64(StringHelpers<string>.BinaryStringToBites(ContentToCipher));
+				result = _base64.BinToBase64(
+					StringHelpers<string>.BinaryStringToBites(
+						ContentToCipher));
 			}
 			else 
 			{
 				result = _base64.ToBase64(ContentToCipher);
 			}
 
-			WindowHandler.InitalizeAndOpenResultWindow(result, CipherTypes.Base64);
+			WindowHandler.InitalizeAndOpenResultWindow(
+				result,
+				CipherTypes.Base64,
+				_serviceProvider);
 		}
 
 		private void HammingBtn_Click(object sender, RoutedEventArgs e)
@@ -113,7 +132,9 @@ namespace WpfApp1
 
 			if (IsContentBinary)
 			{
-				result = _hamming.EncodeBinHamming(StringHelpers<string>.BinaryStringToBites(ContentToCipher));
+				result = _hamming.EncodeBinHamming(
+					StringHelpers<string>.BinaryStringToBites(
+						ContentToCipher));
 			}
 			else
 			{
@@ -143,7 +164,27 @@ namespace WpfApp1
 				privateKey) = _rsa.EncodeRSA(ContentToCipher);
 			}
 
-			WindowHandler.InitalizeRSAWindow(result, publicKey, privateKey, _serviceProvider);
+			WindowHandler.InitalizeRSAWindow(
+				result, 
+				publicKey,
+				privateKey,
+				_serviceProvider);
+		}
+
+		private void RC4Bttn_Click(object sender, RoutedEventArgs e)
+		{
+			if (!CheckCorrectValues())
+			{
+				return;
+			}
+
+			string result = _rc4.EncodeRC4(Key, ContentToCipher);
+
+			WindowHandler.InitalizeAndOpenResultWindow(
+				result,
+				CipherTypes.RC4,
+				_serviceProvider,
+				Key);
 		}
 
 		#endregion

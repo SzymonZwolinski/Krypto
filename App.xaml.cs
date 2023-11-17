@@ -24,6 +24,7 @@ namespace WpfApp1
 				_serviceProvider.GetRequiredService<IBase64>(),
 				_serviceProvider.GetRequiredService<IHamming>(),
 				_serviceProvider.GetRequiredService<IRSA>(),
+				_serviceProvider.GetRequiredService<IRC4>(),
 				_serviceProvider);
 
 			mainWindow.Show();

@@ -13,16 +13,46 @@ namespace WpfApp1.WindowHandlers
 {
 	public static class WindowHandler
 	{
-		public static void InitalizeAndOpenResultWindow(string text, CipherTypes cipherType, string optionalStep)
+		public static void InitalizeAndOpenResultWindow(
+			string text,
+			CipherTypes cipherType,
+			IServiceProvider serviceProvider,
+			string? privateKey = null)
 		{
-			var resultWindow = new ResultWindow(text, cipherType, optionalStep);
+			var resultWindow = new ResultWindow(
+				serviceProvider.GetRequiredService<IPoli>(),
+				serviceProvider.GetRequiredService<IMono>(),
+				serviceProvider.GetRequiredService<ITrans>(),
+				serviceProvider.GetRequiredService<IRC4>(),
+				serviceProvider);
+
+			resultWindow.InitalizeUi(text, cipherType);
+			if (!string.IsNullOrWhiteSpace(privateKey))
+			{
+				resultWindow.AddPrivateKey(privateKey);
+			}
 
 			resultWindow.Show();
 		}
 
-		public static void InitalizeAndOpenResultWindow(string text, CipherTypes cipherType)
+		public static void InitalizeAndOpenResultWindow(
+			string text, 
+			CipherTypes cipherType,
+			string matrix,
+			IServiceProvider serviceProvider)
 		{
-			var resultWindow = new ResultWindow(text, cipherType);
+			var resultWindow = new ResultWindow(
+				serviceProvider.GetRequiredService<IPoli>(),
+				serviceProvider.GetRequiredService<IMono>(),
+				serviceProvider.GetRequiredService<ITrans>(),
+				serviceProvider.GetRequiredService<IRC4>(),
+				serviceProvider);
+
+			resultWindow.InitalizeUi(text, cipherType);
+			if(string.IsNullOrWhiteSpace(matrix)) 
+			{
+				resultWindow.InitalizeDivider(matrix);
+			}
 
 			resultWindow.Show();
 		}

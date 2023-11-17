@@ -13,6 +13,7 @@ namespace WpfApp1.Enums
 		Hamming,
 		Base64,
 		Trans,
-		RSA
+		RC4,
+		RSA,
 	}
 }

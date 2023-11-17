@@ -19,6 +19,7 @@ namespace WpfApp1
 			services.AddScoped<IBase64, Base64>();
 			services.AddScoped<IHamming, Hamming>();
 			services.AddScoped<IRSA, RSA>();
+			services.AddScoped<IRC4, RC4>();
 
 			return services.BuildServiceProvider();
 		}

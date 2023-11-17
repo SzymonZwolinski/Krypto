@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="ResultWindow" Height="450" Width="800">
+        Title="BulSzyfrRozne" Height="450" Width="800">
     <Grid>
         <TextBlock x:Name="CipheredTextBox" HorizontalAlignment="Left" Margin="35,83,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="404" Height="341"/>
         <TextBlock x:Name="CIpheredTextType" HorizontalAlignment="Left" Margin="35,49,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <Rectangle x:Name="MiddleStepBorder" HorizontalAlignment="Left" Height="414" Margin="444,0,0,0" Stroke="Black" VerticalAlignment="Center" Width="346" Visibility="Hidden"/>
         <TextBox x:Name="MiddleStepBox" HorizontalAlignment="Left" Margin="453,0,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="327" Height="396" Visibility="Hidden"/>
+        <Button x:Name="DecodeBttn" Content="Button" HorizontalAlignment="Left" Margin="719,49,0,0" VerticalAlignment="Top" Click="DecodeBttn_Click"/>
 
     </Grid>
 </Window>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace WpfApp1.Ciphers
 {
@@ -10,22 +6,21 @@ namespace WpfApp1.Ciphers
 	{
 		public string PolyalphabeticEncrypt(string input, string key)
 		{
+			const int alphabetSize = 26;
 			var result = new StringBuilder();
 			key = KeyFixer.InitalizeCorrectCoder(key, input.Length);
 
 			for (var i = 0; i < input.Length; i++)
 			{
 				var currentChar = input[i];
+				var keyIndex = i % key.Length;
+				var shift = char.ToUpper(key[keyIndex]) - 'A';
 
 				if (char.IsLetter(currentChar))
 				{
-					var keyIndex = i % key.Length;
-					var shift = char.ToUpper(key[keyIndex]) - 'A';
-
-					var encryptedChar = char.IsUpper(currentChar) ?
-						(char)(((currentChar - 'A' + shift) % 26) + 'A') :
-						(char)(((currentChar - 'a' + shift) % 26) + 'a');
-
+					var isUpperCase = char.IsUpper(currentChar);
+					var baseChar = isUpperCase ? 'A' : 'a';
+					var encryptedChar = (char)(((currentChar - baseChar + shift + alphabetSize) % alphabetSize) + baseChar);
 					result.Append(encryptedChar);
 				}
 				else
@@ -39,22 +34,21 @@ namespace WpfApp1.Ciphers
 
 		public string PolyalphabeticDecrypt(string input, string key)
 		{
+			const int alphabetSize = 26;
 			var result = new StringBuilder();
 			key = KeyFixer.InitalizeCorrectCoder(key, input.Length);
 
 			for (var i = 0; i < input.Length; i++)
 			{
 				var currentChar = input[i];
+				var keyIndex = i % key.Length;
+				var shift = char.ToUpper(key[keyIndex]) - 'A';
 
 				if (char.IsLetter(currentChar))
 				{
-					var keyIndex = i % key.Length;
-					var shift = char.ToUpper(key[keyIndex]) - 'A';
-
-					var decryptedChar = char.IsUpper(currentChar) ?
-						(char)(((currentChar - 'A' - shift + 26) % 26) + 'A') :
-						(char)(((currentChar - 'a' - shift + 26) % 26) + 'a');
-
+					var isUpperCase = char.IsUpper(currentChar);
+					var baseChar = isUpperCase ? 'A' : 'a';
+					var decryptedChar = (char)(((currentChar - baseChar - shift + alphabetSize) % alphabetSize) + baseChar);
 					result.Append(decryptedChar);
 				}
 				else

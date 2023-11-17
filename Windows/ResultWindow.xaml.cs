@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using WpfApp1.Ciphers;
 using WpfApp1.Enums;
 
 namespace WpfApp1
@@ -20,37 +10,50 @@ namespace WpfApp1
 	/// </summary>
 	public partial class ResultWindow : Window
 	{
-		private string CipheredText = string.Empty;
-		private string CipherType = string.Empty;
-		private string MiddleStepText = string.Empty;
+		private readonly IPoli _poli;
+		private readonly IMono _mono;
+		private readonly ITrans _trans;
+		private readonly IRC4 _rc4;
+		private readonly IServiceProvider _serviceProvider;
 
-		public ResultWindow(string cipheredText, CipherTypes cipherType, string? middleStepText)
+		private string CipheredText = string.Empty;
+		private CipherTypes CipherType;
+		private string MiddleStepText = string.Empty;
+		private string PrivateKey;
+
+		public ResultWindow(
+			IPoli poli,
+			IMono mono,
+			ITrans trans,
+			IRC4 rc4,
+			IServiceProvider serviceProvider)
 		{
 			InitializeComponent();
-			CipheredText = cipheredText;
-			CipherType = cipherType.ToString();
-			MiddleStepText = middleStepText;
+			_poli = poli;
+			_mono = mono;
+			_trans = trans;
+			_rc4 = rc4;
+			_serviceProvider = serviceProvider;
+		}
 
+		public void InitalizeUi(string cipheredText, CipherTypes cipherType)
+		{
+			CipheredText = cipheredText;
+			CipherType = cipherType;
 
 			UpdateCipheredTextBox();
 			UpdateCipheredTypeTextBox();
+		}
+
+		public void InitalizeDivider(string middleText)
+		{
+			MiddleStepText = middleText;
 			UpdateMiddleStepBox();
 		}
 
-		public ResultWindow(string cipheredText, CipherTypes cipherType)
+		public void AddPrivateKey(string privateKey)
 		{
-			InitializeComponent();
-			
-			CipheredText = cipheredText;
-			CipherType = cipherType.ToString();
-
-			if(cipherType == CipherTypes.Hamming)
-			{
-				HighlightHammingCorrectionCodes();
-			}	
-
-			UpdateCipheredTextBox();
-			UpdateCipheredTypeTextBox();
+			PrivateKey = privateKey;
 		}
 
 		private void UpdateCipheredTextBox()
@@ -60,10 +63,10 @@ namespace WpfApp1
 
 		private void UpdateCipheredTypeTextBox()
 		{
-			CIpheredTextType.Text = CipherType;
+			CIpheredTextType.Text = CipherType.ToString();
 		}
 
-		private void UpdateMiddleStepBox()
+		public void UpdateMiddleStepBox()
 		{
 			TryToInitalizeMiddleStepBoxes();
 			MiddleStepBox.Text = MiddleStepText;
@@ -76,29 +79,29 @@ namespace WpfApp1
 			MiddleStepBox.Visibility = Visibility.Visible;
 		}
 
-		private void HighlightHammingCorrectionCodes()
+		private void DecodeBttn_Click(object sender, RoutedEventArgs e)
 		{
-			var lenOfText = CipheredText.Length;
-
-			var reduntantBitsAmount = CalculateRedundantBits(lenOfText);
-
-			/*for( int i = 0; i != reduntantBitsAmount; i++ ) 
+			string decodedText = string.Empty;
+			switch(CipherType)
 			{
-				CipheredText.Insert((lenOfText - i) + 1, "|");
-				CipheredText.Insert((lenOfText - i) - 1, "|");
-			}				*/	
-		}
-
-		private int CalculateRedundantBits(int m)
-		{
-			int r = 0;
-
-			while (Math.Pow(2, r) <= m + r + 1)
-			{
-				r++;
+				case (CipherTypes.Trans):
+					decodedText = _trans.DecodeTransparent(CipheredText);
+					break;
+				case (CipherTypes.Mono):
+					decodedText = _mono.MonoalphabeticDecrypt(CipheredText, int.Parse(PrivateKey));
+					break;
+				case (CipherTypes.Poli):
+					decodedText = _poli.PolyalphabeticDecrypt(CipheredText, PrivateKey);
+					break;
+				case (CipherTypes.RC4):
+					decodedText = _rc4.DecodeRC4(PrivateKey, CipheredText);
+					break;
+				default: 
+					break;
 			}
 
-			return r;
+			CipheredText = decodedText;
+			UpdateCipheredTextBox();
 		}
 	}
 }
