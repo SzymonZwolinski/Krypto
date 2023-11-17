@@ -120,7 +120,7 @@ namespace WpfApp1
 				result = _hamming.EncodeHamming(ContentToCipher);
 			}
 
-			WindowHandler.InitalizeAndOpenResultWindow(result, CipherTypes.Hamming);
+			WindowHandler.InitaliseHammingWindow(result, _serviceProvider);
 		}
 
 		private void RSABttn_Click(Object sender, RoutedEventArgs e)

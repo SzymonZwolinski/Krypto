@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="BulSzyfrHomik" Height="450" Width="800">
     <Grid>
-        <TextBox HorizontalAlignment="Left" Margin="27,111,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="566" Height="287"/>
+        <TextBox x:Name="hammingTextBox" HorizontalAlignment="Left" Margin="27,111,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="566" Height="287"/>
         <Button x:Name="DecodeBtn" Content="Odkoduj" HorizontalAlignment="Left" Margin="666,55,0,0" VerticalAlignment="Top" Click="DecodeBtn_Click"/>
         <Button x:Name="Destroybtn" Content="Rozwal" HorizontalAlignment="Left" Margin="666,30,0,0" VerticalAlignment="Top" Width="50" Click="Destroybtn_Click"/>
 

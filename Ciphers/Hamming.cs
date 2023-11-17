@@ -14,12 +14,8 @@ namespace WpfApp1.Ciphers
 	{
 		public string EncodeBinHamming(BigInteger data)
 		{
-			int m = data.GetLength();
-			int r = 0;
-			while (Math.Pow(2, r) < m + r + 1)
-			{
-				r++;
-			}
+			int m = data.ToString().Length;
+			int r = CalculateRedundantBits(m);
 
 			char[] encodedData = new char[m + r];
 			int j = 0;
@@ -32,7 +28,7 @@ namespace WpfApp1.Ciphers
 				}
 				else
 				{
-					encodedData[i] = StringHelpers<string>.BinaryStringToBites(data.ToString().Substring(j++, 0)) == 1 ? '1' : '0';
+					encodedData[i] = (StringHelpers<string>.BinaryStringToBites(data.ToString().Substring(j++, 1)) == 1) ? '1' : '0';
 				}
 			}
 
@@ -70,11 +66,7 @@ namespace WpfApp1.Ciphers
 
 		public string DecodeBinHamming(string encodedData)
 		{
-			int r = 0;
-			while (Math.Pow(2, r) < encodedData.Length + r + 1)
-			{
-				r++;
-			}
+			int r = CalculateRedundantBits(encodedData.Length);
 
 			int m = encodedData.Length - r;
 			char[] decodedData = new char[m];
@@ -111,10 +103,10 @@ namespace WpfApp1.Ciphers
 				}
 			}
 
-			return decodedData.ToString();
+			return new string(decodedData);
 		}
 
-		private int CalculateRedundantBits(int m)
+		public int CalculateRedundantBits(int m)
 		{
 			//2^r ≥ m + r + 1
 			int r = 0;
@@ -130,6 +122,12 @@ namespace WpfApp1.Ciphers
 		private bool IsPowerOfTwo(int x)
 		{
 			return (x & (x - 1)) == 0 && x != 0;
+		}
+
+		public string Destroyhamming(string input)
+		{
+			char firstChar = input[0] == '1' ? '1' : '0';
+			return (firstChar + input.Substring(1));
 		}
 	}
 }

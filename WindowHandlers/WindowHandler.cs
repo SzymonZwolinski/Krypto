@@ -39,5 +39,13 @@ namespace WpfApp1.WindowHandlers
 
 			RSAWindow.Show();
 		}
+
+		public static void InitaliseHammingWindow(string HammingCode, IServiceProvider serviceProvider)
+		{
+			var HammingWindow = new Windows.Hamming(serviceProvider.GetRequiredService<IHamming>(), serviceProvider);
+
+			HammingWindow.InitalizeUI(HammingCode);
+			HammingWindow.Show();
+		}
 	}
 }

@@ -14,5 +14,8 @@ namespace WpfApp1.Ciphers
 		string EncodeBinHamming(BigInteger input);
 
 		string DecodeBinHamming(string input);
+
+		string Destroyhamming(string input);
+		int CalculateRedundantBits(int m);
 	}
 }
