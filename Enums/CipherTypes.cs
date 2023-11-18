@@ -15,5 +15,6 @@ namespace WpfApp1.Enums
 		Trans,
 		RC4,
 		RSA,
+		DES,
 	}
 }

@@ -27,6 +27,7 @@ namespace WpfApp1
 		private readonly IHamming _hamming;
 		private readonly IRSA _rsa;
 		private readonly IRC4 _rc4;
+		private readonly IDES _des;
 
 		private readonly IServiceProvider _serviceProvider;
 
@@ -38,7 +39,8 @@ namespace WpfApp1
 			IHamming hamming,
 			IRSA rsa,
 			IRC4 rc4,
-			IServiceProvider serviceProvider)
+			IDES des,
+		IServiceProvider serviceProvider)
 		{
 			_poli = poli;
 			_mono = mono;
@@ -47,6 +49,7 @@ namespace WpfApp1
 			_hamming = hamming;
 			_rsa = rsa;
 			_rc4 = rc4;
+			_des = des;
 
 			_serviceProvider = serviceProvider;
 
@@ -185,6 +188,21 @@ namespace WpfApp1
 				CipherTypes.RC4,
 				_serviceProvider,
 				Key);
+		}
+
+		private void DesBttn_Click(object sender, RoutedEventArgs e)
+		{
+			/*if (!CheckCorrectValues())
+			{
+				return;
+			}*/
+			var (result, key) = _des.Encode(ContentToCipher);
+
+			WindowHandler.InitalizeAndOpenResultWindowForDes(
+				result,
+				CipherTypes.DES,
+				_serviceProvider,
+				key);
 		}
 
 		#endregion

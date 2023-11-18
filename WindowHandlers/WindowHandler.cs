@@ -24,12 +24,36 @@ namespace WpfApp1.WindowHandlers
 				serviceProvider.GetRequiredService<IMono>(),
 				serviceProvider.GetRequiredService<ITrans>(),
 				serviceProvider.GetRequiredService<IRC4>(),
+				serviceProvider.GetRequiredService<IDES>(),
 				serviceProvider);
 
 			resultWindow.InitalizeUi(text, cipherType);
 			if (!string.IsNullOrWhiteSpace(privateKey))
 			{
 				resultWindow.AddPrivateKey(privateKey);
+			}
+
+			resultWindow.Show();
+		}
+
+		public static void InitalizeAndOpenResultWindowForDes(
+			string text,
+			CipherTypes cipherType,
+			IServiceProvider serviceProvider,
+			byte[]? privateKey = null)
+		{
+			var resultWindow = new ResultWindow(
+				serviceProvider.GetRequiredService<IPoli>(),
+				serviceProvider.GetRequiredService<IMono>(),
+				serviceProvider.GetRequiredService<ITrans>(),
+				serviceProvider.GetRequiredService<IRC4>(),
+				serviceProvider.GetRequiredService<IDES>(),
+				serviceProvider);
+
+			resultWindow.InitalizeUi(text, cipherType);
+			if (privateKey.Any())
+			{
+				resultWindow.AddBytePrivateKey(privateKey);
 			}
 
 			resultWindow.Show();
@@ -46,6 +70,7 @@ namespace WpfApp1.WindowHandlers
 				serviceProvider.GetRequiredService<IMono>(),
 				serviceProvider.GetRequiredService<ITrans>(),
 				serviceProvider.GetRequiredService<IRC4>(),
+				serviceProvider.GetRequiredService<IDES>(),
 				serviceProvider);
 
 			resultWindow.InitalizeUi(text, cipherType);

@@ -19,6 +19,7 @@
         <TextBox x:Name="KeyTxtBox" HorizontalAlignment="Left" Margin="256,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="360" RenderTransformOrigin="0.058,-0.276" TextChanged="KeyTxtBox_TextChanged"/>
         <Button x:Name="RSABttn" Content="RSA" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="101" Click="RSABttn_Click"/>
         <Button x:Name="RC4Bttn" Content="RC4" HorizontalAlignment="Left" Margin="10,202,0,0" VerticalAlignment="Top" Width="101" Click="RC4Bttn_Click"/>
+        <Button x:Name="DesBttn" Content="DES" HorizontalAlignment="Left" Margin="10,230,0,0" VerticalAlignment="Top" Width="101" Click="DesBttn_Click"/>
 
     </Grid>
 </Window>

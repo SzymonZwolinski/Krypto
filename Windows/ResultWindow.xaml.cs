@@ -14,18 +14,21 @@ namespace WpfApp1
 		private readonly IMono _mono;
 		private readonly ITrans _trans;
 		private readonly IRC4 _rc4;
+		private readonly IDES _des;
 		private readonly IServiceProvider _serviceProvider;
 
 		private string CipheredText = string.Empty;
 		private CipherTypes CipherType;
 		private string MiddleStepText = string.Empty;
 		private string PrivateKey;
+		private byte[] BytePrimaryKey;
 
 		public ResultWindow(
 			IPoli poli,
 			IMono mono,
 			ITrans trans,
 			IRC4 rc4,
+			IDES des,
 			IServiceProvider serviceProvider)
 		{
 			InitializeComponent();
@@ -33,6 +36,7 @@ namespace WpfApp1
 			_mono = mono;
 			_trans = trans;
 			_rc4 = rc4;
+			_des = des;
 			_serviceProvider = serviceProvider;
 		}
 
@@ -54,6 +58,11 @@ namespace WpfApp1
 		public void AddPrivateKey(string privateKey)
 		{
 			PrivateKey = privateKey;
+		}
+
+		public void AddBytePrivateKey(byte[] privateKey)
+		{
+			BytePrimaryKey = privateKey;
 		}
 
 		private void UpdateCipheredTextBox()
@@ -95,6 +104,9 @@ namespace WpfApp1
 					break;
 				case (CipherTypes.RC4):
 					decodedText = _rc4.DecodeRC4(PrivateKey, CipheredText);
+					break;
+				case (CipherTypes.DES):
+					decodedText = _des.Decode(CipheredText, BytePrimaryKey);
 					break;
 				default: 
 					break;
