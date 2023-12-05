@@ -22,6 +22,7 @@ namespace WpfApp1
 		private string MiddleStepText = string.Empty;
 		private string PrivateKey;
 		private byte[] BytePrimaryKey;
+		private byte[] Iv;
 
 		public ResultWindow(
 			IPoli poli,
@@ -65,6 +66,11 @@ namespace WpfApp1
 			BytePrimaryKey = privateKey;
 		}
 
+		public void AddIv(byte[] iv )
+		{
+			Iv = iv;
+		}
+
 		private void UpdateCipheredTextBox()
 		{
 			CipheredTextBox.Text = CipheredText;
@@ -106,7 +112,7 @@ namespace WpfApp1
 					decodedText = _rc4.DecodeRC4(PrivateKey, CipheredText);
 					break;
 				case (CipherTypes.DES):
-					decodedText = _des.Decode(CipheredText, BytePrimaryKey);
+					decodedText = _des.Decode(CipheredText, BytePrimaryKey, Iv);
 					break;
 				default: 
 					break;

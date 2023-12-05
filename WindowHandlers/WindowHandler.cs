@@ -40,7 +40,8 @@ namespace WpfApp1.WindowHandlers
 			string text,
 			CipherTypes cipherType,
 			IServiceProvider serviceProvider,
-			byte[]? privateKey = null)
+			byte[]? privateKey = null,
+			byte[]? iv = null)
 		{
 			var resultWindow = new ResultWindow(
 				serviceProvider.GetRequiredService<IPoli>(),
@@ -55,6 +56,8 @@ namespace WpfApp1.WindowHandlers
 			{
 				resultWindow.AddBytePrivateKey(privateKey);
 			}
+
+			if(iv.Any()) { resultWindow.AddIv(iv); }
 
 			resultWindow.Show();
 		}

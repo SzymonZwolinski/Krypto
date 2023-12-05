@@ -192,17 +192,15 @@ namespace WpfApp1
 
 		private void DesBttn_Click(object sender, RoutedEventArgs e)
 		{
-			/*if (!CheckCorrectValues())
-			{
-				return;
-			}*/
-			var (result, key) = _des.Encode(ContentToCipher);
+			
+			var (result, key, iv) = _des.Encode(ContentToCipher);
 
 			WindowHandler.InitalizeAndOpenResultWindowForDes(
 				result,
 				CipherTypes.DES,
 				_serviceProvider,
-				key);
+				key,
+				iv);
 		}
 
 		#endregion

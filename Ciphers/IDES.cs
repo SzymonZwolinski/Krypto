@@ -8,7 +8,7 @@ namespace WpfApp1.Ciphers
 {
 	public interface IDES
 	{
-		(string, byte[]) Encode(string text);
-		string Decode(string encryptedText, byte[] key);
+		(string, byte[], byte[]) Encode(string text);
+		string Decode(string encryptedText, byte[] key, byte[] iv);
 	}
 }
